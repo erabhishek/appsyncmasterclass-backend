@@ -1,7 +1,7 @@
 service: appsyncmasterclass-backend
 # app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+app: appsyncmasterclass-backend
+org: courseviewnprint
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -42,6 +42,16 @@ functions:
       - Effect: Allow
         Action: dynamodb:PutItem
         Resource: !GetAtt UsersTable.Arn
+  getImageUploadUrl:
+    handler: functions/get-upload-url.handler
+    environment:
+      BUCKET_NAME: !Ref AssetsBucket
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: !Sub ${AssetsBucket.Arn}/*
 
 resources:
   Resources:
@@ -105,7 +115,21 @@ resources:
           - ALLOW_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
         PreventUserExistenceErrors: ENABLED
-    
+    AssetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccelerateConfiguration:
+          AccelerationStatus: Enabled
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+
       
 
   Outputs:

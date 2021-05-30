@@ -40,30 +40,38 @@ describe('Given an authenticated user', () => {
     expect(profile.screenName).toContain(lastName)
   })
 
-//   it('The user can get an URL to upload new profile image', async () => {
-//     const uploadUrl = await when.a_user_calls_getImageUploadUrl(user, '.png', 'image/png')
+  it('The user can edit his profile with editMyProfile', async () => {
+    const newName = chance.first()
+const input  = {
+    name: newName
+}
 
-//     const bucketName = process.env.BUCKET_NAME
-//     const regex = new RegExp(`https://${bucketName}.s3-accelerate.amazonaws.com/${user.username}/.*\.png\?.*Content-Type=image%2Fpng.*`)
-//     expect(uploadUrl).toMatch(regex)
+const newProfile = await when.a_user_calls_editMyProfile(user,input)
 
-//     const filePath = path.join(__dirname, '../../data/logo.png')
-//     await then.user_can_upload_image_to_url(uploadUrl, filePath, 'image/png')
+    expect(newProfile).toMatchObject({
+    ...profile,
+    name: newName
+    //   tweets: {
+    //     nextToken: null,
+    //     tweets: []
+    //   }
+    })
 
-//     const downloadUrl = uploadUrl.split('?')[0]
-//     await then.user_can_download_image_from(downloadUrl)
-//   })
+    const [firstName, lastName] = profile.name.split(' ')
+    expect(profile.screenName).toContain(firstName)
+    expect(profile.screenName).toContain(lastName)
+  })
+  it('The user can get an URL to upload new profile image', async () => {
+    const uploadUrl = await when.a_user_calls_getImageUploadUrl(user, '.png', 'image/png')
 
-//   it('The user can edit his profile with editMyProfile', async () => {
-//     const newName = chance.first()
-//     const input = {
-//       name: newName
-//     }
-//     const newProfile = await when.a_user_calls_editMyProfile(user, input)
+    const bucketName = process.env.BUCKET_NAME
+    const regex = new RegExp(`https://${bucketName}.s3-accelerate.amazonaws.com/${user.username}/.*\.png\?.*Content-Type=image%2Fpng.*`)
+    expect(uploadUrl).toMatch(regex)
 
-//     expect(newProfile).toMatchObject({
-//       ...profile,
-//       name: newName
-//     })
-//   })
+    const filePath = path.join(__dirname, '../../data/logo.png')
+    await then.user_can_upload_image_to_url(uploadUrl, filePath, 'image/png')
+
+    const downloadUrl = uploadUrl.split('?')[0]
+    await then.user_can_download_image_from(downloadUrl)
+  })
 })
