@@ -114,8 +114,8 @@ resources:
     CongitoUserPoolId:
       Value: !Ref CognitoUserPool
 
-    # ApiUrl:
-    #   Value: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
+    ApiUrl:
+      Value: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
 
     WebCognitoUserPoolClientId:
       Value: !Ref WebUserPoolClient
